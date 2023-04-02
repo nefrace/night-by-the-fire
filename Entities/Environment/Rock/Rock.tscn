@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://rdu64y7oq03k"]
+
+[ext_resource type="Texture2D" uid="uid://4q0385alks0u" path="res://Entities/Environment/Rock/rocks.png" id="1_deq2y"]
+
+[sub_resource type="GDScript" id="GDScript_st1fj"]
+script/source = "extends Sprite3D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	frame = randi_range(0, 2)
+	flip_h = randf() > 0.5
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x3gl6"]
+size = Vector3(0.326287, 0.216147, 0.207456)
+
+[node name="Rocks" type="Sprite3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.224134, 0)
+pixel_size = 0.0296
+billboard = 2
+double_sided = false
+texture_filter = 0
+texture = ExtResource("1_deq2y")
+hframes = 3
+script = SubResource("GDScript_st1fj")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0762967, 0)
+shape = SubResource("BoxShape3D_x3gl6")

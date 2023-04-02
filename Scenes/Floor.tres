@@ -1,0 +1,13 @@
+[gd_resource type="VisualShader" load_steps=2 format=3 uid="uid://copioy35xp78b"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_06h5y"]
+input_name = "uv"
+
+[resource]
+code = "shader_type spatial;
+
+
+"
+graph_offset = Vector2(-813.671, 3.12021)
+nodes/fragment/2/node = SubResource("VisualShaderNodeInput_06h5y")
+nodes/fragment/2/position = Vector2(-740, 160)

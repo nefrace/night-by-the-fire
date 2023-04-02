@@ -1,0 +1,68 @@
+[gd_scene load_steps=7 format=3 uid="uid://dun8l4negp11w"]
+
+[ext_resource type="Script" path="res://Entities/Player/Bullet.gd" id="1_8636h"]
+[ext_resource type="Texture2D" uid="uid://2uxoqxch7d2y" path="res://Entities/Enemies/Demon/demonball.png" id="2_w3dca"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_n0xk5"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="Animation" id="Animation_jiggl"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_y3o5u"]
+resource_name = "spin"
+length = 1.2
+loop_mode = 1
+step = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mox2i"]
+_data = {
+"RESET": SubResource("Animation_jiggl"),
+"spin": SubResource("Animation_y3o5u")
+}
+
+[node name="Bullet" type="CharacterBody3D"]
+top_level = true
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_8636h")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_n0xk5")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+pixel_size = 0.0228
+billboard = 1
+alpha_cut = 1
+texture_filter = 0
+texture = ExtResource("2_w3dca")
+hframes = 6
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_mox2i")
+}

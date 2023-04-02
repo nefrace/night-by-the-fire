@@ -1,0 +1,70 @@
+[gd_scene load_steps=5 format=3 uid="uid://ds7p2f1oiw0mg"]
+
+[ext_resource type="Texture2D" uid="uid://ctv7j4myqxvm3" path="res://Entities/SFX/stab.png" id="1_7jfss"]
+
+[sub_resource type="Animation" id="Animation_dm12o"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_nucne"]
+resource_name = "swing"
+length = 0.1545
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.15),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_b2d8q"]
+_data = {
+"RESET": SubResource("Animation_dm12o"),
+"swing": SubResource("Animation_nucne")
+}
+
+[node name="Stab" type="Sprite3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.131254, 0)
+offset = Vector2(12, 0)
+pixel_size = 0.0228
+axis = 1
+texture_filter = 0
+texture = ExtResource("1_7jfss")
+hframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "swing"
+libraries = {
+"": SubResource("AnimationLibrary_b2d8q")
+}

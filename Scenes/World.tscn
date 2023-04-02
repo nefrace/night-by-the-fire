@@ -1,0 +1,197 @@
+[gd_scene load_steps=19 format=3 uid="uid://ctrpi7gjj6txn"]
+
+[ext_resource type="Material" uid="uid://iogxsc8qjgr4" path="res://gfx/floorr.tres" id="1_6k5ka"]
+[ext_resource type="PackedScene" uid="uid://ugcwu7cdxt6x" path="res://Entities/Environment/Campfire/campfire.tscn" id="1_p4c8q"]
+[ext_resource type="Script" path="res://Scripts/floorFiller.gd" id="1_std3d"]
+[ext_resource type="PackedScene" uid="uid://bcjq0d1xqdmnf" path="res://Entities/Player/player.tscn" id="2_vo2ca"]
+[ext_resource type="Script" path="res://Entities/Camera.gd" id="3_0stx0"]
+[ext_resource type="Shader" path="res://gfx/Afterlife.gdshader" id="6_vd3c2"]
+[ext_resource type="Script" path="res://gfx/UI.gd" id="6_w2s7j"]
+[ext_resource type="Texture2D" uid="uid://jr0ht4elpxk2" path="res://gfx/hearts.png" id="7_qacpe"]
+[ext_resource type="PackedScene" uid="uid://q55jvbb8jj7b" path="res://Entities/Enemies/Zombie/Zombie.tscn" id="8_rgorn"]
+[ext_resource type="PackedScene" uid="uid://byk01cvxjpw5m" path="res://Entities/Enemies/Demon/Demon.tscn" id="9_ee6gj"]
+[ext_resource type="FontFile" uid="uid://gk55fp876bxc" path="res://gfx/DungeonFont.ttf" id="9_vvqtj"]
+
+[sub_resource type="Environment" id="Environment_gsx3s"]
+background_mode = 1
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_73g6q"]
+shading_mode = 0
+albedo_color = Color(0.152941, 0.152941, 0.266667, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fg21v"]
+material = SubResource("StandardMaterial3D_73g6q")
+size = Vector2(100, 100)
+subdivide_width = 4
+subdivide_depth = 4
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_tpf4m"]
+data = PackedVector3Array(50, 0, 50, -50, 0, 50, 50, 0, -50, -50, 0, 50, -50, 0, -50, 50, 0, -50)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kfo1y"]
+shader = ExtResource("6_vd3c2")
+shader_parameter/is_active = false
+
+[sub_resource type="GDScript" id="GDScript_5r4mc"]
+script/source = "extends Control
+
+
+func set_health(health: int):
+	var health_stock = health
+	var children := get_children()
+	for c in children:
+		if health_stock > 1:
+			c.frame = 0
+		elif health_stock == 1:
+			c.frame = 1
+		else:
+			c.frame = 2
+		health_stock -= 2
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_sksib"]
+font = ExtResource("9_vvqtj")
+font_size = 195
+font_color = Color(0.984314, 0.960784, 0.937255, 1)
+outline_size = 30
+outline_color = Color(0.152941, 0.152941, 0.266667, 1)
+
+[node name="World" type="Node3D"]
+
+[node name="Environment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_gsx3s")
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+layers = 524289
+material_override = ExtResource("1_6k5ka")
+mesh = SubResource("PlaneMesh_fg21v")
+script = ExtResource("1_std3d")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor" groups=["navmesh"]]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_tpf4m")
+
+[node name="Campfire" parent="." instance=ExtResource("1_p4c8q")]
+unique_name_in_owner = true
+collision_layer = 3
+collision_mask = 3
+
+[node name="Player" parent="." instance=ExtResource("2_vo2ca")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.306028, 0.570934)
+
+[node name="Camera" type="Camera3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 6.65644, 6.22916)
+top_level = true
+fov = 16.9
+script = ExtResource("3_0stx0")
+point_path = NodePath("..")
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("6_w2s7j")
+
+[node name="AfterlifeEffect" type="ColorRect" parent="UI"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_kfo1y")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="HealthContainer" type="Control" parent="UI/Control"]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 50.0
+offset_bottom = 50.0
+mouse_filter = 2
+script = SubResource("GDScript_5r4mc")
+
+[node name="Heart1" type="Sprite2D" parent="UI/Control/HealthContainer"]
+texture_filter = 1
+scale = Vector2(5, 5)
+texture = ExtResource("7_qacpe")
+centered = false
+hframes = 3
+
+[node name="Heart2" type="Sprite2D" parent="UI/Control/HealthContainer"]
+texture_filter = 1
+position = Vector2(50, 0)
+scale = Vector2(5, 5)
+texture = ExtResource("7_qacpe")
+centered = false
+hframes = 3
+
+[node name="Heart3" type="Sprite2D" parent="UI/Control/HealthContainer"]
+texture_filter = 1
+position = Vector2(100, 0)
+scale = Vector2(5, 5)
+texture = ExtResource("7_qacpe")
+centered = false
+hframes = 3
+
+[node name="GameOverLabel" type="Label" parent="UI/Control"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Game over"
+label_settings = SubResource("LabelSettings_sksib")
+
+[node name="GameOverTimer" type="Timer" parent="UI"]
+unique_name_in_owner = true
+wait_time = 3.0
+one_shot = true
+
+[node name="Enemy" parent="." instance=ExtResource("8_rgorn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13992, 1.19209e-07, -0.729238)
+
+[node name="Enemy2" parent="." instance=ExtResource("8_rgorn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.474014, 0, -1.21929)
+
+[node name="Enemy3" parent="." instance=ExtResource("8_rgorn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.826604, 0, -0.639076)
+
+[node name="Enemy4" parent="." instance=ExtResource("8_rgorn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45883, -1.19209e-07, 0.575509)
+
+[node name="Enemy5" parent="." instance=ExtResource("8_rgorn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.78716, 0, -1.4448)
+
+[node name="Enemy6" parent="." instance=ExtResource("9_ee6gj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.800611, 0, -0.319796)
+
+[connection signal="input_event" from="Floor/StaticBody3D" to="Player" method="_on_floor_input_event"]
+[connection signal="campfire_died" from="Campfire" to="Player" method="on_campfire_died"]
+[connection signal="campfire_died" from="Campfire" to="UI" method="_on_campfire_campfire_died"]
+[connection signal="health_changed" from="Player" to="UI" method="_on_player_health_changed"]
+[connection signal="timeout" from="UI/GameOverTimer" to="UI" method="_on_game_over_timer_timeout"]
+
+[editable path="Campfire"]
