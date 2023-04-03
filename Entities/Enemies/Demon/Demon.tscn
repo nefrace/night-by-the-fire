@@ -1,7 +1,8 @@
-[gd_scene load_steps=22 format=3 uid="uid://byk01cvxjpw5m"]
+[gd_scene load_steps=23 format=3 uid="uid://byk01cvxjpw5m"]
 
 [ext_resource type="Script" path="res://Entities/Enemies/Demon/Demon.gd" id="1_olbgh"]
 [ext_resource type="Texture2D" uid="uid://bvq5aa02y6grv" path="res://Entities/Enemies/Demon/demon.png" id="2_5mlvl"]
+[ext_resource type="AudioStream" uid="uid://dpnk80dvsvshw" path="res://audio/swing.wav" id="3_rsohf"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_5lx7f"]
 height = 0.699853
@@ -223,7 +224,7 @@ graph_offset = Vector2(198, -41)
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_cj0j5"]
 
-[node name="Enemy" type="CharacterBody3D"]
+[node name="Enemy" type="CharacterBody3D" groups=["demon", "enemy"]]
 collision_layer = 3
 collision_mask = 3
 input_ray_pickable = false
@@ -251,3 +252,6 @@ libraries = {
 tree_root = SubResource("AnimationNodeStateMachine_nnckl")
 anim_player = NodePath("../AnimationPlayer")
 parameters/playback = SubResource("AnimationNodeStateMachinePlayback_cj0j5")
+
+[node name="AttackSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_rsohf")

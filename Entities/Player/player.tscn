@@ -1,8 +1,99 @@
-[gd_scene load_steps=27 format=3 uid="uid://bcjq0d1xqdmnf"]
+[gd_scene load_steps=37 format=3 uid="uid://bcjq0d1xqdmnf"]
 
 [ext_resource type="Script" path="res://Entities/Player/Player.gd" id="1_abf6m"]
 [ext_resource type="Texture2D" uid="uid://bopkphpusent8" path="res://Entities/Player/player.png" id="2_plqca"]
 [ext_resource type="Texture2D" uid="uid://bagxmtbh7xyfs" path="res://Entities/Weapons/sword.png" id="3_avnjv"]
+[ext_resource type="Texture2D" uid="uid://bi4g6xdak8rj6" path="res://Entities/SFX/swing-ready.png" id="4_0iw7c"]
+[ext_resource type="AudioStream" uid="uid://dm138wf6jk450" path="res://audio/stab.wav" id="4_i2n06"]
+[ext_resource type="AudioStream" uid="uid://dpnk80dvsvshw" path="res://audio/swing.wav" id="5_4on5u"]
+[ext_resource type="AudioStream" uid="uid://cxmgm0maxklf6" path="res://audio/health.wav" id="6_qxomm"]
+[ext_resource type="AudioStream" uid="uid://bkgsnfr701k34" path="res://audio/hit.wav" id="7_pa1sa"]
+[ext_resource type="AudioStream" uid="uid://d0x5fndx0xnh0" path="res://audio/swing_ready.wav" id="8_b0hwo"]
+[ext_resource type="AudioStream" uid="uid://cx76sfugtvkub" path="res://audio/gameover.wav" id="10_6w6cl"]
+
+[sub_resource type="Animation" id="Animation_4akv5"]
+resource_name = "start"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1, 1, 1), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0.42867), Vector3(0, 0, -0.153589)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SwingReady:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_ww3x3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0.42867)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SwingReady:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1tyru"]
+_data = {
+"RESET": SubResource("Animation_ww3x3"),
+"start": SubResource("Animation_4akv5")
+}
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_da1ff"]
 height = 0.427363
@@ -57,6 +148,30 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [Vector3(-0.056, 0.133, 0.026)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("StabSound:playing")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("SwingSound:playing")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_ob0sm"]
@@ -124,6 +239,18 @@ tracks/4/keys = {
 "method": &"stab"
 }]
 }
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("StabSound:playing")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="Animation" id="Animation_4rerh"]
 resource_name = "attack-v"
@@ -189,6 +316,18 @@ tracks/4/keys = {
 "args": [],
 "method": &"swing"
 }]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("SwingSound:playing")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.134078),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_27q7g"]
@@ -374,6 +513,23 @@ alpha_cut = 1
 texture_filter = 0
 texture = ExtResource("3_avnjv")
 
+[node name="SwingReady" type="Sprite3D" parent="Sprite3D/WeaponPoint/Sprite3D"]
+transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, -0.00595525, 0.213284, 0.0171983)
+pixel_size = 0.0228
+alpha_cut = 1
+texture_filter = 0
+texture = ExtResource("4_0iw7c")
+
+[node name="SwingReady" type="AudioStreamPlayer" parent="Sprite3D/WeaponPoint/Sprite3D/SwingReady"]
+stream = ExtResource("8_b0hwo")
+volume_db = -2.826
+
+[node name="SwingReadyAnim" type="AnimationPlayer" parent="Sprite3D/WeaponPoint/Sprite3D/SwingReady"]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_1tyru")
+}
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.212613, 0)
 shape = SubResource("CylinderShape3D_da1ff")
@@ -394,11 +550,27 @@ parameters/playback = SubResource("AnimationNodeStateMachinePlayback_pl4wp")
 parameters/conditions/is_idle = false
 parameters/conditions/is_running = false
 
-[node name="CampfireDetector" type="Area3D" parent="."]
-collision_layer = 8
-collision_mask = 8
+[node name="PickupDetector" type="Area3D" parent="."]
+collision_layer = 4194312
+collision_mask = 4194312
+input_ray_pickable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CampfireDetector"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PickupDetector"]
 shape = SubResource("CylinderShape3D_oeqsa")
 
-[connection signal="area_entered" from="CampfireDetector" to="." method="_on_campfire_detector_area_entered"]
+[node name="StabSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_i2n06")
+
+[node name="SwingSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_4on5u")
+
+[node name="HealthSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_qxomm")
+
+[node name="HitSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_pa1sa")
+
+[node name="GameOver" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_6w6cl")
+
+[connection signal="area_entered" from="PickupDetector" to="." method="_on_pickup_detector_area_entered"]

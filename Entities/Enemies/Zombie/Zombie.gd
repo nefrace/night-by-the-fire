@@ -3,6 +3,7 @@ class_name Zombie
 
 @export var SPEED = 0.4
 
+
 @onready var animtree : AnimationTree = $AnimationTree
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -13,12 +14,12 @@ var timer: float = 0.0
 @export var is_attacking: bool = false
 
 func _ready():
+	type = "zombie"
 	SPEED = SPEED + randf_range(-0.1, 0.1)
 	await get_tree().create_timer(randf()).timeout
 	animtree.active = true
 
 func _physics_process(delta):
-	var plr : CharacterBody3D = %Player
 	timer += delta
 	if plr.is_dead:
 		return
@@ -39,7 +40,7 @@ func _physics_process(delta):
 	super._physics_process(delta)
 
 func damage_callback(dmg: int):
-	velocity += (global_position - %Player.global_position).normalized() * 2.0 * (dmg / 3.0)
+	velocity += (global_position - plr.global_position).normalized() * 2.0 * (dmg / 3.0)
 	velocity.y = 1.3
 	if health <= 0:
 		animtree.active = false
@@ -48,8 +49,8 @@ func damage_callback(dmg: int):
 		tween.tween_property($Sprite3D, "rotation", Vector3(0, 0, PI/2), 0.3)
 
 func hit_player():
-	var plr : CharacterBody3D = %Player
 	var diff := plr.global_position - global_position
 	if diff.length_squared() < 0.13:
 		plr.take_damage()
+		$HitSound.play()
 		plr.velocity += diff.normalized() * 2 + Vector3.UP*0.6

@@ -23,5 +23,5 @@ func _process(delta):
 			$GPUParticles3D.emitting = false
 			campfire_died.emit()
 	else:
-		health = min(health + delta / 2, 5)
+		health = min(health + delta / 10, 5)
 	$Light.pixel_size = remap(health, 0, 5, 0.003, 0.03)

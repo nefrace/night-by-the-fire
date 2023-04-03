@@ -17,35 +17,36 @@ var is_dead: bool = false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var mouse_direction: Vector3
 var shoot_timer: float = 0
+var revive_cooldown: float = 0
+var swing_ready: bool = true
 @export var reload_timer: float = 2;
 var ammo: int = 2
 @export var is_attacking: bool = false
 
 
-func update_attack(delta): 
+func update_attack(_delta): 
 	if health <= 0:
 		return
 	var pbk : AnimationNodeStateMachinePlayback = animtree.get("parameters/playback")
 	if Input.is_action_just_pressed("attack_low"):
 		pbk.travel("attack-h")
-	if Input.is_action_just_pressed("attack_high"):
+	if Input.is_action_just_pressed("attack_high") && swing_ready:
 		pbk.travel("attack-v")
+		swing_ready = false
+		await get_tree().create_timer(2).timeout
+		swing_ready = true
+		%SwingReadyAnim.play("start")
 
 
 func _process(delta):
 	update_attack(delta)
 
 func _physics_process(delta):
-	# Add the gravity.
 	if not is_on_floor():
 		velocity.y -= gravity * delta
+		
+	revive_cooldown = max(revive_cooldown - delta, 0)
 
-	# Handle Jump.
-#	if Input.is_action_just_pressed("jump") and is_on_floor() and !is_attacking:
-#		velocity.y = JUMP_VELOCITY
-
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if !is_dead && direction && !is_attacking:
@@ -63,8 +64,8 @@ func _physics_process(delta):
 	move_and_slide()
 
 
-func _on_floor_input_event(camera, event, position, normal, shape_idx):
-	mouse_direction = (position - global_position).normalized()
+func _on_floor_input_event(_camera, _event, pos, _normal, _shape_idx):
+	mouse_direction = (pos - global_position).normalized()
 	mouse_direction.y = 0
 	
 func attack(damage: int, distance: float, penetration: int, effect_scene: PackedScene):
@@ -75,26 +76,38 @@ func attack(damage: int, distance: float, penetration: int, effect_scene: Packed
 	var query := PhysicsRayQueryParameters3D.create(global_position, global_position + mouse_direction*distance, 2)
 	query.exclude = []
 	var excludes = []
+	var didHit = false
 	for i in range(penetration):
 		var result := space_state.intersect_ray(query)
 		if result:
-			(result["collider"] as BasicEnemy).take_damage(damage)
-			excludes.push_back(result["collider"].get_rid())
-			query.exclude = excludes
+			var e := result["collider"] as BasicEnemy
+			if e != null:
+				didHit = true
+				e.take_damage(damage)
+				excludes.push_back(e.get_rid())
+				query.exclude = excludes
+	if didHit:
+		$HitSound.play()
 	
 func stab():
-	attack(1, 0.5, 1, stab_scene)
+	attack(2, 0.8, 1, stab_scene)
 	
 func swing():
-	attack(3, 1, 3, swing_scene)
+	attack(5, 1.2, 3, swing_scene)
 	
 func take_damage():
 	health -= 1
+	if health <= 0:
+		revive_cooldown = 0.5
+		var diff = (global_position - $"../Campfire".global_position).normalized()
+		velocity = Vector3(diff.x, 1, diff.y) * 3
+		
 	health_changed.emit(health)
 	
 func on_campfire_died():
 	if is_dead:
 		return
+	$GameOver.play()
 	is_dead = true
 	collision_layer = 1
 	animtree.active = false
@@ -110,7 +123,18 @@ func on_campfire_died():
 
 
 
-func _on_campfire_detector_area_entered(area):
-	if health == 0:
-		health = 3
+func _on_pickup_detector_area_entered(area):
+	var camp = $"../Campfire"
+	if area.name != "camp":
+		health = min(6, health + 2)
+		health_changed.emit(health)
+		$HealthSound.play()
+		area.queue_free()
+		return
+	if health > 0:
+		return
+	if revive_cooldown > 0:
+		return
+	health = 3
+	camp.health = max(camp.health - 2, 0.5) #dirty hack 
 	health_changed.emit(health)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://ctrpi7gjj6txn"]
+[gd_scene load_steps=22 format=3 uid="uid://ctrpi7gjj6txn"]
 
 [ext_resource type="Material" uid="uid://iogxsc8qjgr4" path="res://gfx/floorr.tres" id="1_6k5ka"]
 [ext_resource type="PackedScene" uid="uid://ugcwu7cdxt6x" path="res://Entities/Environment/Campfire/campfire.tscn" id="1_p4c8q"]
@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://q55jvbb8jj7b" path="res://Entities/Enemies/Zombie/Zombie.tscn" id="8_rgorn"]
 [ext_resource type="PackedScene" uid="uid://byk01cvxjpw5m" path="res://Entities/Enemies/Demon/Demon.tscn" id="9_ee6gj"]
 [ext_resource type="FontFile" uid="uid://gk55fp876bxc" path="res://gfx/DungeonFont.ttf" id="9_vvqtj"]
+[ext_resource type="Script" path="res://Entities/Spawner.gd" id="10_7adoh"]
+[ext_resource type="Theme" uid="uid://ds5iug31kuum6" path="res://gfx/Theme.tres" id="10_ebt1c"]
 
 [sub_resource type="Environment" id="Environment_gsx3s"]
 background_mode = 1
@@ -58,6 +60,14 @@ font_color = Color(0.984314, 0.960784, 0.937255, 1)
 outline_size = 30
 outline_color = Color(0.152941, 0.152941, 0.266667, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_m0jo4"]
+font = ExtResource("9_vvqtj")
+font_size = 67
+font_color = Color(0.94902, 0.827451, 0.670588, 1)
+shadow_size = 2
+shadow_color = Color(0.152941, 0.152941, 0.266667, 1)
+shadow_offset = Vector2(2, 2)
+
 [node name="World" type="Node3D"]
 
 [node name="Environment" type="WorldEnvironment" parent="."]
@@ -93,6 +103,7 @@ script = ExtResource("3_0stx0")
 point_path = NodePath("..")
 
 [node name="UI" type="CanvasLayer" parent="."]
+process_mode = 3
 script = ExtResource("6_w2s7j")
 
 [node name="AfterlifeEffect" type="ColorRect" parent="UI"]
@@ -165,33 +176,79 @@ grow_vertical = 2
 text = "Game over"
 label_settings = SubResource("LabelSettings_sksib")
 
+[node name="Kills" type="Label" parent="UI/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+label_settings = SubResource("LabelSettings_m0jo4")
+horizontal_alignment = 2
+
 [node name="GameOverTimer" type="Timer" parent="UI"]
 unique_name_in_owner = true
 wait_time = 3.0
 one_shot = true
 
-[node name="Enemy" parent="." instance=ExtResource("8_rgorn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13992, 1.19209e-07, -0.729238)
+[node name="Menu" type="Control" parent="UI"]
+unique_name_in_owner = true
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("10_ebt1c")
 
-[node name="Enemy2" parent="." instance=ExtResource("8_rgorn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.474014, 0, -1.21929)
+[node name="ColorRect" type="ColorRect" parent="UI/Menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.341176)
 
-[node name="Enemy3" parent="." instance=ExtResource("8_rgorn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.826604, 0, -0.639076)
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Menu"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -162.0
+offset_right = 213.0
+grow_vertical = 0
 
-[node name="Enemy4" parent="." instance=ExtResource("8_rgorn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45883, -1.19209e-07, 0.575509)
+[node name="Resume" type="Button" parent="UI/Menu/VBoxContainer"]
+layout_mode = 2
+text = "Resume"
+flat = true
 
-[node name="Enemy5" parent="." instance=ExtResource("8_rgorn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.78716, 0, -1.4448)
+[node name="Quit" type="Button" parent="UI/Menu/VBoxContainer"]
+layout_mode = 2
+text = "Quit"
+flat = true
+alignment = 0
 
-[node name="Enemy6" parent="." instance=ExtResource("9_ee6gj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.800611, 0, -0.319796)
+[node name="Spawner" type="Node" parent="."]
+script = ExtResource("10_7adoh")
+zombie = ExtResource("8_rgorn")
+demon = ExtResource("9_ee6gj")
+
+[node name="Timer" type="Timer" parent="Spawner"]
+wait_time = 1.512
+autostart = true
 
 [connection signal="input_event" from="Floor/StaticBody3D" to="Player" method="_on_floor_input_event"]
 [connection signal="campfire_died" from="Campfire" to="Player" method="on_campfire_died"]
 [connection signal="campfire_died" from="Campfire" to="UI" method="_on_campfire_campfire_died"]
 [connection signal="health_changed" from="Player" to="UI" method="_on_player_health_changed"]
 [connection signal="timeout" from="UI/GameOverTimer" to="UI" method="_on_game_over_timer_timeout"]
-
-[editable path="Campfire"]
+[connection signal="pressed" from="UI/Menu/VBoxContainer/Resume" to="UI" method="_on_resume_pressed"]
+[connection signal="pressed" from="UI/Menu/VBoxContainer/Quit" to="UI" method="_on_quit_pressed"]
+[connection signal="total_kills_changed" from="Spawner" to="UI" method="_on_spawner_total_kills_changed"]
+[connection signal="timeout" from="Spawner/Timer" to="Spawner" method="_on_timer_timeout"]

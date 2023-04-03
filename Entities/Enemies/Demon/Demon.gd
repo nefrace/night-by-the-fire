@@ -4,6 +4,7 @@ class_name Demon
 
 @onready var animtree : AnimationTree = $AnimationTree
 var bullet = preload("res://Entities/Enemies/Demon/Demonball.tscn")
+var heart = preload("res://Entities/Environment/HeartPickup/Heart.tscn")
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var dir_offset: float = 0
@@ -18,6 +19,7 @@ var attack_now: bool = false
 @export var is_teleporting: bool = false
 
 func _ready():
+	type = "demon"
 	await get_tree().create_timer(randf()).timeout
 	animtree.active = true
 	teleport_time = randf_range(3, 5)
@@ -27,7 +29,6 @@ func _process(delta):
 	$Sprite3D.offset.y = 17 + sin(timer * 2) * 2
 
 func _physics_process(delta):
-	var plr : CharacterBody3D = %Player
 	if !is_teleporting && !is_attacking:
 		teleport_time -= delta
 		if teleport_time <= 0:
@@ -53,13 +54,16 @@ func damage_callback(dmg: int):
 	velocity += (global_position - %Player.global_position).normalized() * 2.0 * (dmg / 3.0)
 	velocity.y = 1.3
 	if health <= 0:
+		var h = heart.instantiate()
+		get_parent().add_child(h)
+		h.global_position = global_position
+#		h.global_position.y = 0
 		animtree.active = false
 		var tween := get_tree().create_tween()
 		tween.set_ease(Tween.EASE_OUT)
 		tween.tween_property($Sprite3D, "rotation", Vector3(0, 0, PI/2), 0.3)
 
 func teleport():
-	var plr : CharacterBody3D = %Player
 	var offset := (Vector3.FORWARD * randf_range(1.3, 2.5)).rotated(Vector3.UP, randf()*PI*2)
 	global_position = plr.global_position + offset
 	teleport_time = randf_range(1, 2)
@@ -70,7 +74,6 @@ func teleport():
 		teleport_count = 0
 
 func single_shot():
-	var plr : CharacterBody3D = %Player
 	var b := bullet.instantiate()
 	add_child(b)
 	b.global_position = global_position + Vector3.UP * 0.1
@@ -79,7 +82,6 @@ func single_shot():
 	b.direction = dir
 
 func multi_shot():
-	var plr : CharacterBody3D = %Player
 	for i in range(-1, 2):
 		var b := bullet.instantiate()
 		add_child(b)
@@ -89,6 +91,7 @@ func multi_shot():
 		b.direction = dir.rotated(Vector3.UP, i)
 		
 func attack():
+	$AttackSound.play()
 	if attack_count == 3:
 		multi_shot()
 	else:

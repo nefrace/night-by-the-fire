@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://q55jvbb8jj7b"]
+[gd_scene load_steps=16 format=3 uid="uid://q55jvbb8jj7b"]
 
 [ext_resource type="Script" path="res://Entities/Enemies/Zombie/Zombie.gd" id="1_lfxqr"]
 [ext_resource type="Texture2D" uid="uid://ckhgyi27av3we" path="res://Entities/Enemies/Zombie/zombie.png" id="2_xejw5"]
+[ext_resource type="AudioStream" uid="uid://bkgsnfr701k34" path="res://audio/hit.wav" id="3_pka8i"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_5lx7f"]
 height = 0.699853
@@ -123,7 +124,7 @@ transitions = ["Start", "run", SubResource("AnimationNodeStateMachineTransition_
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_cj0j5"]
 
-[node name="Enemy" type="CharacterBody3D"]
+[node name="Enemy" type="CharacterBody3D" groups=["enemy", "zombie"]]
 collision_layer = 3
 collision_mask = 3
 input_ray_pickable = false
@@ -151,3 +152,6 @@ libraries = {
 tree_root = SubResource("AnimationNodeStateMachine_nnckl")
 anim_player = NodePath("../AnimationPlayer")
 parameters/playback = SubResource("AnimationNodeStateMachinePlayback_cj0j5")
+
+[node name="HitSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_pka8i")

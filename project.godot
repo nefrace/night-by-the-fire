@@ -15,6 +15,16 @@ run/main_scene="res://Scenes/Menu.tscn"
 config/features=PackedStringArray("4.0", "Forward Plus")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/mode=3
+
+[editor]
+
+movie_writer/mjpeg_quality=0.95
+movie_writer/movie_file="C:/Dev/Projects/CampfireOfDoom/video/footage.avi"
+movie_writer/fps=30
+
 [importer_defaults]
 
 texture={

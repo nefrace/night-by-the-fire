@@ -11,7 +11,7 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
+func _physics_process(_delta):
 	look_at(%Player.position)
 	var target = point.global_position + target_offset
 	global_position = global_position.lerp(target, 0.1)

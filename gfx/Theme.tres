@@ -1,0 +1,10 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://ds5iug31kuum6"]
+
+[ext_resource type="FontFile" uid="uid://gk55fp876bxc" path="res://gfx/DungeonFont.ttf" id="1_w3n5r"]
+
+[resource]
+default_font = ExtResource("1_w3n5r")
+default_font_size = 70
+Button/colors/font_color = Color(0.94902, 0.827451, 0.670588, 1)
+Button/colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
+Button/fonts/font = ExtResource("1_w3n5r")

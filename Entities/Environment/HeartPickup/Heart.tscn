@@ -1,0 +1,105 @@
+[gd_scene load_steps=6 format=3 uid="uid://32av1f3xjfi4"]
+
+[ext_resource type="Texture2D" uid="uid://jr0ht4elpxk2" path="res://gfx/hearts.png" id="1_u1in8"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_b0hwg"]
+radius = 0.16209
+
+[sub_resource type="Animation" id="Animation_d2x4b"]
+resource_name = "Spawn"
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.2, 0.4)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(-0.00162435, -0.25, 0, 0, 0.0979874, 0.270933, -0.1, 0, 0.1, 0.00095135, 0, 0, 0.0397587, 0, 0.04071, 0.103498, -0.1, 0, 0.1, -0.00114868, 0.00170532, 0, 0.0494694, 0.25, 0),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite3D:position:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.2, 0.4)
+}
+
+[sub_resource type="Animation" id="Animation_2fchs"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite3D:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite3D:position:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rrg6h"]
+_data = {
+"RESET": SubResource("Animation_2fchs"),
+"Spawn": SubResource("Animation_d2x4b")
+}
+
+[node name="Heart" type="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.102704, 0)
+collision_layer = 4194304
+collision_mask = 4194304
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+pixel_size = 0.0228
+billboard = 2
+texture_filter = 0
+texture = ExtResource("1_u1in8")
+hframes = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_b0hwg")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "Spawn"
+libraries = {
+"": SubResource("AnimationLibrary_rrg6h")
+}
