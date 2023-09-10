@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://chi17u642m4co"
-path="res://.godot/imported/grad-light.png-17d9ddc857bcd53ec138ce5fe6fa227c.ctex"
+path="res://.godot/imported/grad-light.png-30c684bc9c32238ed046247884b82583.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://gfx/grad-light.png"
-dest_files=["res://.godot/imported/grad-light.png-17d9ddc857bcd53ec138ce5fe6fa227c.ctex"]
+source_file="res://Entities/Environment/Campfire/grad-light.png"
+dest_files=["res://.godot/imported/grad-light.png-30c684bc9c32238ed046247884b82583.ctex"]
 
 [params]
 

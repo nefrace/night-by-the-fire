@@ -6,7 +6,7 @@
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_5lx7f"]
 height = 0.699853
-radius = 0.161894
+radius = 0.129681
 
 [sub_resource type="Animation" id="Animation_xlc0e"]
 length = 0.001
@@ -122,7 +122,9 @@ states/run/node = SubResource("AnimationNodeAnimation_5au0c")
 states/run/position = Vector2(481, 48)
 transitions = ["Start", "run", SubResource("AnimationNodeStateMachineTransition_yof6h"), "run", "attack", SubResource("AnimationNodeStateMachineTransition_4lmt5"), "attack", "run", SubResource("AnimationNodeStateMachineTransition_b2q2x")]
 
-[sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_cj0j5"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_0jrul"]
+height = 0.801
+radius = 0.31
 
 [node name="Enemy" type="CharacterBody3D" groups=["enemy", "zombie"]]
 collision_layer = 3
@@ -151,7 +153,16 @@ libraries = {
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource("AnimationNodeStateMachine_nnckl")
 anim_player = NodePath("../AnimationPlayer")
-parameters/playback = SubResource("AnimationNodeStateMachinePlayback_cj0j5")
 
 [node name="HitSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_pka8i")
+
+[node name="HitArea" type="Area3D" parent="."]
+collision_layer = 16
+collision_mask = 16
+input_ray_pickable = false
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.379158, 0)
+shape = SubResource("CylinderShape3D_0jrul")

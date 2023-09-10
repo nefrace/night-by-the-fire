@@ -16,6 +16,7 @@ var is_dead: bool = false
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var mouse_direction: Vector3
+var attack_direction: Vector3
 var shoot_timer: float = 0
 var revive_cooldown: float = 0
 var swing_ready: bool = true
@@ -27,11 +28,15 @@ var ammo: int = 2
 func update_attack(_delta): 
 	if health <= 0:
 		return
+	if is_attacking:
+		return false
 	var pbk : AnimationNodeStateMachinePlayback = animtree.get("parameters/playback")
 	if Input.is_action_just_pressed("attack_low"):
 		pbk.travel("attack-h")
+		attack_direction = mouse_direction
 	if Input.is_action_just_pressed("attack_high") && swing_ready:
 		pbk.travel("attack-v")
+		attack_direction = mouse_direction
 		swing_ready = false
 		await get_tree().create_timer(2).timeout
 		swing_ready = true
@@ -59,7 +64,10 @@ func _physics_process(delta):
 		velocity.z = move_toward(velocity.z, 0, 10 * delta)
 		animtree.set("parameters/conditions/is_idle", true)
 		animtree.set("parameters/conditions/is_running", false)
-	$Sprite3D.scale.x = -1 if mouse_direction.x < 0 else 1
+	var dir = mouse_direction
+	if is_attacking:
+		dir = attack_direction
+	$Sprite3D.scale.x = -1 if dir.x < 0 else 1
 	$Sprite3D/WeaponPoint.visible = health > 0
 	move_and_slide()
 
@@ -71,20 +79,22 @@ func _on_floor_input_event(_camera, _event, pos, _normal, _shape_idx):
 func attack(damage: int, distance: float, penetration: int, effect_scene: PackedScene):
 	var s: Node3D = effect_scene.instantiate()
 	add_child(s)
-	s.rotation.y = -mouse_direction.signed_angle_to(Vector3.FORWARD, Vector3.UP)+PI/2
+	s.rotation.y = -attack_direction.signed_angle_to(Vector3.FORWARD, Vector3.UP)+PI/2
 	var space_state := get_world_3d().direct_space_state
-	var query := PhysicsRayQueryParameters3D.create(global_position, global_position + mouse_direction*distance, 2)
+	var query := PhysicsRayQueryParameters3D.create(global_position, global_position + attack_direction*distance, 16)
+	query.collide_with_areas = true 
+	query.collide_with_bodies = false
 	query.exclude = []
 	var excludes = []
 	var didHit = false
 	for i in range(penetration):
 		var result := space_state.intersect_ray(query)
 		if result:
-			var e := result["collider"] as BasicEnemy
+			var e := result["collider"].get_parent() as BasicEnemy
 			if e != null:
 				didHit = true
 				e.take_damage(damage)
-				excludes.push_back(e.get_rid())
+				excludes.push_back(result["collider"].get_rid())
 				query.exclude = excludes
 	if didHit:
 		$HitSound.play()

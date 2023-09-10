@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dhusxv1l3d7aa" path="res://Entities/Environment/Campfire/campfire.png" id="1_2tevx"]
 [ext_resource type="Script" path="res://Entities/Environment/Campfire/campfire.gd" id="1_t81b8"]
-[ext_resource type="Texture2D" uid="uid://chi17u642m4co" path="res://gfx/grad-light.png" id="2_wvyxw"]
+[ext_resource type="Texture2D" uid="uid://chi17u642m4co" path="res://Entities/Environment/Campfire/grad-light.png" id="3_ra6nb"]
 
 [sub_resource type="Animation" id="Animation_u75wt"]
 resource_name = "Fire"
@@ -129,7 +129,7 @@ axis = 1
 double_sided = false
 alpha_cut = 1
 texture_filter = 0
-texture = ExtResource("2_wvyxw")
+texture = ExtResource("3_ra6nb")
 hframes = 3
 frame = 1
 

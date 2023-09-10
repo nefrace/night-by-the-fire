@@ -44,9 +44,9 @@ func _physics_process(delta):
 	var diff := plr.global_position - global_position
 	$Sprite3D.flip_h = diff.x < 0
 
-	if !is_stunned:
-		velocity.x = move_toward(velocity.x, 0, 2 * delta)
-		velocity.z = move_toward(velocity.z, 0, 2 * delta)
+	if is_on_floor():
+		velocity.x = move_toward(velocity.x, 0, 5.0 * delta)
+		velocity.z = move_toward(velocity.z, 0, 5.0 * delta)
 	set_collision_layer_value(2, !is_teleporting)
 	super._physics_process(delta)
 
